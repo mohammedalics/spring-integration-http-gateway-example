@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+		http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-file="http://www.springframework.org/schema/integration/file"
+	xmlns:int-http="http://www.springframework.org/schema/integration/http"
+	xmlns:int-mail="http://www.springframework.org/schema/integration/mail">
+
+
+	<context:component-scan base-package="example.spring.integration.gateway.http.httpgateway" />
+
+	<int-http:inbound-gateway request-channel="receiveChannel"
+		path="/receiveGateway" reply-channel="responseChannel" 
+		supported-methods="POST" />
+	<int:channel id="receiveChannel" />
+	<int:channel id="logChannel" />
+	<int:channel id="responseChannel">
+		<int:interceptors>
+			<int:wire-tap channel="logChannel" />
+		</int:interceptors>
+	</int:channel>
+
+	<int:logging-channel-adapter id="loggingAdaptor"
+		level="INFO" channel="logChannel"></int:logging-channel-adapter>
+
+
+	<int:service-activator input-channel="receiveChannel"
+		ref="messageHandler" output-channel="responseChannel" />
+
+
+</beans>
