@@ -1,6 +1,7 @@
 package example.spring.integration.gateway.http.httpgateway;
 
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +18,8 @@ public class MessageHandler {
      * @return the message
      */
     @ServiceActivator
-    public Message handleMessage(Message<?> message) {
-        System.out.println("Http Gateway Message: " + message);
-        return message;
+    public Message handleMessage(RequestEntity entity) {
+        System.out.println(entity.getText()); 
+        return MessageBuilder.withPayload(entity.getText()).build();
     }
 }

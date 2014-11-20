@@ -15,7 +15,7 @@
 	<context:component-scan base-package="example.spring.integration.gateway.http.httpgateway" />
 
 	<int-http:inbound-gateway request-channel="receiveChannel"
-		path="/receiveGateway" reply-channel="responseChannel" 
+		path="/receiveGateway" reply-channel="responseChannel"  
 		supported-methods="POST" />
 	<int:channel id="receiveChannel" />
 	<int:channel id="logChannel" />
@@ -28,9 +28,9 @@
 	<int:logging-channel-adapter id="loggingAdaptor"
 		level="INFO" channel="logChannel"></int:logging-channel-adapter>
 
-
-	<int:service-activator input-channel="receiveChannel"
+	<int:service-activator input-channel="transformedReceiveChannel"
 		ref="messageHandler" output-channel="responseChannel" />
 
-
+	<int:channel id="transformedReceiveChannel" />
+	<int:transformer id="transformer" input-channel="receiveChannel" output-channel="transformedReceiveChannel" ref="httpTransformer" method="transform"/> 
 </beans>
